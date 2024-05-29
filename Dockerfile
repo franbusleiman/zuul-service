@@ -1,5 +1,16 @@
 FROM openjdk:8
-VOLUME /tmp
-EXPOSE 1238
-ADD ./target/zuul-service-0.0.1-SNAPSHOT.jar zuul-service.jar
-ENTRYPOINT ["java", "-jar", "/zuul-service.jar"]
+
+WORKDIR /app
+
+VOLUME /app/tmp
+
+COPY ./mvnw .
+COPY ./.mvn .mvn
+COPY ./pom.xml .
+
+RUN ./mvnw dependency:go-offline
+
+COPY ./src ./src
+
+RUN ./mvnw clean package
+CMD ["java", "-jar", "./target/zuul-service-0.0.1-SNAPSHOT.jar"]
