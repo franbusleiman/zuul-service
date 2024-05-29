@@ -1,4 +1,4 @@
-package com.busleiman.zulservice.filters;
+package com.liro.zuulservice.filters;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
