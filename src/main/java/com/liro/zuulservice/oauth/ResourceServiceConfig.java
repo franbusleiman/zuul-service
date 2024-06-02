@@ -42,6 +42,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
+                .antMatchers("/api/animals/h2-console/**").permitAll()
                 .antMatchers("**/swagger-resources/**").permitAll()
                 .antMatchers("**/v2/api-docs").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
