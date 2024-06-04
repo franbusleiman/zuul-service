@@ -43,6 +43,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
                 .antMatchers("/api/animals/h2-console/**").permitAll()
+                .antMatchers("/api/medicines/h2-console/**").permitAll()
                 .antMatchers("**/swagger-resources/**").permitAll()
                 .antMatchers("**/v2/api-docs").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
@@ -52,6 +53,8 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/api/users/v2/api-docs").permitAll()
                 .antMatchers("/api/animals/v2/api-docs").permitAll()
                 .antMatchers("/api/animals/swagger-ui.html").permitAll()
+                .antMatchers("/api/medicines/v2/api-docs").permitAll()
+                .antMatchers("/api/medicines/swagger-ui.html").permitAll()
                 .antMatchers("/api/users/swagger-ui.html").permitAll()
                 .antMatchers("/api/animals/swagger-ui/index.html").permitAll()
                 .antMatchers("/api/users/swagger-ui/index.html").permitAll()
@@ -110,6 +113,8 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
             List resources = new ArrayList<>();
             resources.add(swaggerResource("users-service", "/api/users/v2/api-docs", "2.0"));
             resources.add(swaggerResource("animals-service", "/api/animals/v2/api-docs", "2.0"));
+            resources.add(swaggerResource("medicines-service", "/api/medicines/v2/api-docs", "2.0"));
+
 
             return resources;
         }
