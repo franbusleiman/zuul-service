@@ -42,6 +42,9 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
+                .antMatchers("/api/users/existByEmail/{email}").permitAll()
+                .antMatchers("/api/users/existByIdentificationNr/{identificationNr}").permitAll()
+                .antMatchers("/api/users/h2-console/**").permitAll()
                 .antMatchers("/api/animals/h2-console/**").permitAll()
                 .antMatchers("/api/medicines/h2-console/**").permitAll()
                 .antMatchers("/api/consultations/h2-console/**").permitAll()
