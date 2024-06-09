@@ -69,7 +69,6 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/users/addresses").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/users/{id}").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable();
