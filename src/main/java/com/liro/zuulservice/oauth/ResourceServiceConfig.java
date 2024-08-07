@@ -71,7 +71,10 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/webjars/springfox-swagger-ui/**").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/users").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/addresses").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/animals/recordTypes").hasAnyRole("VET","ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/breeds/records").hasAnyRole("VET","ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/animals/types").hasAnyRole("VET","ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/animals/animalColors").hasAnyRole("VET","ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable();
