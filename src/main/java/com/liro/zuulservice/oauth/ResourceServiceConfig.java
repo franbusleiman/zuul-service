@@ -128,6 +128,8 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
             resources.add(swaggerResource("animals-service", "/api/animals/v2/api-docs", "2.0"));
             resources.add(swaggerResource("medicines-service", "/api/medicines/v2/api-docs", "2.0"));
             resources.add(swaggerResource("consultations-service", "/api/consultations/v2/api-docs", "2.0"));
+            resources.add(swaggerResource("migrator-service", "/api/migrator/v2/api-docs", "2.0"));
+
 
             return resources;
         }
