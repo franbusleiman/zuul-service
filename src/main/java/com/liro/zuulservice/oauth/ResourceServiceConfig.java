@@ -71,6 +71,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/webjars/springfox-swagger-ui/**").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/users").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/users/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/users/addresses").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -123,8 +124,6 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
             resources.add(swaggerResource("animals-service", "/api/animals/v2/api-docs", "2.0"));
             resources.add(swaggerResource("medicines-service", "/api/medicines/v2/api-docs", "2.0"));
             resources.add(swaggerResource("consultations-service", "/api/consultations/v2/api-docs", "2.0"));
-            resources.add(swaggerResource("applications-service", "/api/applications/v2/api-docs", "2.0"));
-
 
             return resources;
         }
