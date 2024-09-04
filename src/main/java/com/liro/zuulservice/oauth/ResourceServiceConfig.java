@@ -57,6 +57,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/api/users/v2/api-docs").permitAll()
                 .antMatchers("/api/animals/v2/api-docs").permitAll()
+                .antMatchers("/api/migrator/v2/api-docs").permitAll()
                 .antMatchers("/api/animals/swagger-ui.html").permitAll()
                 .antMatchers("/api/medicines/v2/api-docs").permitAll()
                 .antMatchers("/api/medicines/swagger-ui.html").permitAll()
