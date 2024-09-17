@@ -41,7 +41,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
         System.out.println(http.headers());
 
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
-                .antMatchers(HttpMethod.POST, "https://api.liro.pet/api/users/prelunch").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/users/prelunch").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
                 .antMatchers("/api/users/users/existsByEmail/{email}").permitAll()
                 .antMatchers("/api/users/users/existsByIdentificationNr/{identificationNr}").permitAll()
