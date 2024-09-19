@@ -99,11 +99,13 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 config.setAllowCredentials(true);
                 config.addAllowedOrigin("https://app.liro.pet"); // Cambia por tu dominio
                 config.addAllowedHeader("Authorization");
+                config.addAllowedMethod(HttpMethod.OPTIONS.name());
                 config.addAllowedMethod("POST");
                 config.addAllowedMethod("PUT");
                 config.addAllowedMethod("DELETE");
                 config.addAllowedMethod("GET");
-
+                config.addAllowedHeader("Content-Type");
+                config.addAllowedHeader("*");
                 return config;
             }
         };
