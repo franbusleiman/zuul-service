@@ -25,6 +25,7 @@ import org.springframework.web.filter.CorsFilter;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,6 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
         System.out.println(http.headers());
 
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/users/prelunch").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
                 .antMatchers("/api/users/users/existsByEmail/{email}").permitAll()
                 .antMatchers("/api/users/users/existsByIdentificationNr/{identificationNr}").permitAll()
@@ -91,14 +91,20 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
     @Bean
     public FilterRegistrationBean corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter((CorsConfigurationSource) source));
+        CorsConfigurationSource source = new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest httpServletRequest) {
+
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowCredentials(true);
+                config.addAllowedOrigin("*");
+                config.addAllowedHeader("*");
+                config.addAllowedMethod("*");
+                return config;
+            }
+        };
+
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
         return bean;
     }
