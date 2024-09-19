@@ -97,9 +97,14 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowCredentials(true);
-                config.addAllowedOrigin("*");
-                config.addAllowedHeader("*");
-                config.addAllowedMethod("*");
+                config.addAllowedOrigin("https://app.liro.pet/"); // Cambia por tu dominio
+                config.addAllowedHeader("Authorization");
+                config.addAllowedMethod("POST");
+                config.addAllowedMethod("PUT");
+                config.addAllowedMethod("DELETE");
+                config.addAllowedMethod("GET");
+                config.setAllowCredentials(true);
+
                 return config;
             }
         };
