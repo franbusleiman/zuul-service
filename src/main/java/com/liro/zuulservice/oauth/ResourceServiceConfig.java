@@ -49,7 +49,6 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/users/prelunch/create").permitAll()
 
                 .antMatchers("/api/users/users/existsByEmail/{email}").permitAll()
                 .antMatchers("/api/users/users/existsByIdentificationNr/{identificationNr}").permitAll()
@@ -81,6 +80,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/webjars/springfox-swagger-ui/**").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/users").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/users/prelunch/create").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/animals/recordTypes").hasAnyRole("VET","ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/animals/types").hasAnyRole("VET","ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/animals/animalColors").hasAnyRole("VET","ADMIN")
