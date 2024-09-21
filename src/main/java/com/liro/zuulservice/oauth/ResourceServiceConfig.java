@@ -101,6 +101,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowCredentials(true);
                 config.addAllowedOrigin("https://app.liro.pet");
+                config.addAllowedOrigin("https://liro.pet");
                 config.addAllowedOrigin("https://api.liro.pet");// Cambia por tu dominio
                 config.addAllowedHeader("Authorization");
                 config.addAllowedMethod(HttpMethod.OPTIONS.name());
