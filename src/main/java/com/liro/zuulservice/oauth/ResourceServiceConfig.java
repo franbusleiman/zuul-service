@@ -102,7 +102,8 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 config.setAllowCredentials(true);
                 config.addAllowedOrigin("https://app.liro.pet");
                 config.addAllowedOrigin("https://liro.pet");
-                config.addAllowedOrigin("https://api.liro.pet");// Cambia por tu dominio
+                config.addAllowedOrigin("https://api.liro.pet");
+                config.addAllowedOrigin("https://www.liro.pet");// Cambia por tu dominio
                 config.addAllowedHeader("Authorization");
                 config.addAllowedMethod(HttpMethod.OPTIONS.name());
                 config.addAllowedMethod("POST");
