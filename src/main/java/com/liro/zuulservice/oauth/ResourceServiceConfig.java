@@ -90,6 +90,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/animals/breeds").hasAnyRole("VET","ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/consultations/consultations").hasAnyRole("VET","ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/consultations/consultations").hasAnyRole("VET","ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/clinics/clinics").hasAnyRole("VET", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable();
