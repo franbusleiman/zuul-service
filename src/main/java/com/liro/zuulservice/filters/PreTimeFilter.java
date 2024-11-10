@@ -1,20 +1,29 @@
 package com.liro.zuulservice.filters;
 
+import com.liro.zuulservice.clients.FeignClinicClient;
+import com.liro.zuulservice.dtos.ClinicaResponse;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PreTimeFilter extends ZuulFilter {
 
     Logger logger = LoggerFactory.getLogger(PreTimeFilter.class);
+
+    @Autowired
+    FeignClinicClient feignClinicClient;
 
 
     @Override
@@ -35,8 +44,6 @@ public class PreTimeFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
 
-        logger.info("Crossing the edge");
-        String username;
 
         RequestContext rx = RequestContext.getCurrentContext();
         HttpServletRequest httpServletRequest = rx.getRequest();
@@ -44,15 +51,22 @@ public class PreTimeFilter extends ZuulFilter {
         Long currentTime = System.currentTimeMillis();
         httpServletRequest.setAttribute("currentTime", currentTime);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String clinicId = httpServletRequest.getHeader("clinicId");
 
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
+        if(clinicId!=null){
+            String token = httpServletRequest.getHeader("Authorization");
+
+            List<ClinicaResponse> clinicaResponseList = feignClinicClient.getUsersByClinicId(token).getBody();
+
+
+            List<Long> clinicIds = clinicaResponseList.stream().map(ClinicaResponse::getId)
+                    .collect(Collectors.toList());
+
+            if(!clinicIds.contains(Long.valueOf(clinicId))){
+                rx.unset();
+                rx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
+            }
         }
-
-        logger.info("USERNAME: " + username);
 
         return null;
     }
