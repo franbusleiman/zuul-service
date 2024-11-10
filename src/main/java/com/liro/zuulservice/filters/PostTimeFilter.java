@@ -45,7 +45,6 @@ public class PostTimeFilter extends ZuulFilter {
 
         try (final InputStream responseDataStream = ctx.getResponseDataStream()) {
             final String responseData = CharStreams.toString(new InputStreamReader(responseDataStream, StandardCharsets.UTF_8));
-            System.out.println(responseData);
             ctx.setResponseBody(responseData);
         } catch (IOException e) {
             log.warn("Error reading body",e);

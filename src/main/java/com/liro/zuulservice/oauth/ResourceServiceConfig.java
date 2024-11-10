@@ -44,7 +44,6 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        System.out.println(http.headers());
 
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
@@ -146,9 +145,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
             @Override
             public OAuth2Authentication extractAuthentication(Map<String, ?> map) {
-                // Añadir log para la extracción de autenticación
-                Logger logger = LoggerFactory.getLogger(JwtAccessTokenConverter.class);
-                logger.info("Extrayendo autenticación del token JWT");
+
                 return super.extractAuthentication(map);
             }
         };
