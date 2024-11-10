@@ -17,6 +17,8 @@ public class ClinicsService {
 
     @Cacheable(value = "clinicUsers", key = "#token")
     public List<ClinicaResponse> getUsersByClinicId(String token) {
+        System.out.println("Invocando getUsersByClinicId en ClinicService con token: " + token);
+
         return feignClinicClient.getUsersByClinicId(token).getBody();
     }
 }
