@@ -1,5 +1,6 @@
 package com.liro.zuulservice.filters;
 
+import com.liro.zuulservice.clients.ClinicsService;
 import com.liro.zuulservice.clients.FeignClinicClient;
 import com.liro.zuulservice.dtos.ClinicaResponse;
 import com.netflix.zuul.ZuulFilter;
@@ -23,7 +24,7 @@ public class PreTimeFilter extends ZuulFilter {
     Logger logger = LoggerFactory.getLogger(PreTimeFilter.class);
 
     @Autowired
-    FeignClinicClient feignClinicClient;
+    ClinicsService clinicsService;
 
 
     @Override
@@ -56,7 +57,7 @@ public class PreTimeFilter extends ZuulFilter {
         if(clinicId!=null){
             String token = httpServletRequest.getHeader("Authorization");
 
-            List<ClinicaResponse> clinicaResponseList = feignClinicClient.getUsersByClinicId(token).getBody();
+            List<ClinicaResponse> clinicaResponseList = clinicsService.getUsersByClinicId(token);
 
 
             List<Long> clinicIds = clinicaResponseList.stream().map(ClinicaResponse::getId)

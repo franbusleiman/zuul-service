@@ -11,7 +11,6 @@ import java.util.List;
 @FeignClient(name = "clinics-service")
 public interface FeignClinicClient {
 
-    @Cacheable(value = "clinicUsers", key = "#token")
     @GetMapping(value = "/clinics/findAllByVet")
     ResponseEntity<List<ClinicaResponse>> getUsersByClinicId(@RequestHeader(name = "Authorization") String token);
 }
