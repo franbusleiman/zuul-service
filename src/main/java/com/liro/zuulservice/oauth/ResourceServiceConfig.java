@@ -1,7 +1,10 @@
 package com.liro.zuulservice.oauth;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -17,15 +21,18 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +44,25 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
     Logger logger = LoggerFactory.getLogger(ResourceServiceConfig.class);
 
+    @Autowired
+    private CustomAuthenticationEntryPoint unauthorizedHandler;
+
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        resources.tokenStore(tokenStore());
+        resources.tokenStore(tokenStore())
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+    }
+
+    @Component
+    public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+        @Override
+        public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+            logger.error("Authentication error: {}", authException.getMessage());
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"" + authException.getMessage() + "\"}");
+        }
     }
 
     @Override
@@ -47,7 +70,8 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
         http.authorizeRequests().antMatchers("/api/security/oauth/token").permitAll()
                 .antMatchers("/api/users/h2-console/**").permitAll()
-                .antMatchers("/api/users/users/setAccount").permitAll()
+                .antMatchers("/api/users/users/invite").permitAll()
+                .antMatchers("/api/users/users/accept-invite").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/users/users/existsByEmail/{email}").permitAll()
                 .antMatchers("/api/users/users/existsByIdentificationNr/{identificationNr}").permitAll()
@@ -83,18 +107,20 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users/prelunch").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/animals/recordTypes").hasAnyRole("VET","ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/animals/types").hasAnyRole("VET","ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/animals/animalColors").hasAnyRole("VET","ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/animals/breeds").hasAnyRole("VET","ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/consultations/consultations").hasAnyRole("VET","ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/consultations/consultations").hasAnyRole("VET","ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/animals/recordTypes").hasAnyRole("VET", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/animals/types").hasAnyRole("VET", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/animals/animalColors").hasAnyRole("VET", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/animals/breeds").hasAnyRole("VET", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/consultations/consultations").hasAnyRole("VET", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/consultations/consultations").hasAnyRole("VET", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/clinics/clinics").hasAnyRole("VET", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .headers().frameOptions().disable();
+                .headers().frameOptions().disable()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler);
     }
-
     @Bean
     public FilterRegistrationBean corsFilter() {
         CorsConfigurationSource source = new CorsConfigurationSource() {
@@ -106,6 +132,8 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
                 config.addAllowedOrigin("https://app.liro.pet");
                 config.addAllowedOrigin("https://liro.pet");
                 config.addAllowedOrigin("https://api.liro.pet");
+                config.addAllowedOrigin("https://dev.app.liro.pet");
+                config.addAllowedOrigin("https://b449-190-106-97-242.ngrok-free.app");
                 config.addAllowedOrigin("https://www.liro.pet");// Cambia por tu dominio
                 config.addAllowedHeader("Authorization");
                 config.addAllowedMethod(HttpMethod.OPTIONS.name());
@@ -123,6 +151,7 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
         bean.setOrder(0);
         return bean;
     }
+
     @Bean
     public JwtTokenStore tokenStore() {
         return new JwtTokenStore(accessTokenConverter());
@@ -168,7 +197,6 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
             resources.add(swaggerResource("consultations-service", "/api/consultations/v2/api-docs", "2.0"));
             resources.add(swaggerResource("migrator-service", "/api/migrator/v2/api-docs", "2.0"));
             resources.add(swaggerResource("clinics-service", "/api/clinics/v2/api-docs", "2.0"));
-
 
 
             return resources;
